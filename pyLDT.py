@@ -8,10 +8,21 @@ import growth_eqns
 import solve_eqns
 import compute_pk
 
-#initialise ODEs at import
-res1 = solve_eqns.SphEvoGR(0.,0.3,1e-5,0.)
-res2 = solve_eqns.calc_growth_fr_full(0.3,-1e-5,1.,0.001,0.)
-res3 = solve_eqns.calc_growth_dgp_full(0.3,0.5,0.)
+def init_pyLDT():
+#initialise all ODEs at import. Add here new ODE to initialise and increase N_models accordingly
+    N_models = 3
+    res = [None for _ in range(N_models)]
+    res[0] = solve_eqns.SphEvoGR(0.,0.3,1e-5,0.)
+    res[1] = solve_eqns.calc_growth_fr_full(0.3,-1e-5,1.,0.001,0.)
+    res[2] = solve_eqns.calc_growth_dgp_full(0.3,0.5,0.)
+
+    for i,out in enumerate(res):
+        if i==0 and np.isnan(out):
+            print('ODE initialisation {:d} failed. Check growth_eqns.py and/or solve_eqns.py modules for bugs and dependencies.'.format(i))
+        elif i>0 and np.any(np.isnan(out.u)):
+            print('ODE initialisation {:d} failed. Check growth_eqns.py and/or solve_eqns.py modules for bugs and dependencies.'.format(i))
+
+init_pyLDT()
 
 def get_tau(Omega_m, zf=0):
     

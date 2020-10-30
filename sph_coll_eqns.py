@@ -5,7 +5,7 @@ from julia import Main
 # initial conditions with linear theory ratios
 jul_rhs_gr = Main.eval("""
     function rhs_gr(dy,y,p,x)
-        Omega_m, deltai, xi = p
+        Omega_m, deltai, xi = p 
         Omega_L = 1. - Omega_m
         H = sqrt(Omega_m * exp(-3*x) + Omega_L)
         H2 = Omega_m * exp(-3*x) + Omega_L
