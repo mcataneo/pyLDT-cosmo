@@ -8,10 +8,22 @@ import growth_eqns
 import solve_eqns
 import compute_pk
 
-#initialise ODEs at import
-res1 = solve_eqns.SphEvoGR(0.,0.3,1e-5,0.)
-res2 = solve_eqns.calc_growth_fr_full(0.3,-1e-5,1.,0.001,0.)
-res3 = solve_eqns.calc_growth_dgp_full(0.3,0.5,0.)
+def init_pyLDT():
+#initialise all ODEs at import. Add here new ODE to initialise and increase N_models accordingly
+    N_models = 3
+    res = [None for _ in range(N_models)]
+    res[0] = solve_eqns.SphEvoGR(0.,0.3,1e-5,0.)
+    res[1] = solve_eqns.calc_growth_fr_full(0.3,-1e-5,1.,0.001,0.)
+    res[2] = solve_eqns.calc_growth_dgp_full(0.3,0.5,0.)
+
+    for i,out in enumerate(res):
+        if i==0 and np.isnan(out):
+            print('ODE initialisation {:d} failed. Check growth_eqns.py and/or solve_eqns.py modules for bugs and dependencies.'.format(i))
+        elif i>0 and np.any(np.isnan(out.u)):
+            print('ODE initialisation {:d} failed. Check growth_eqns.py and/or solve_eqns.py modules for bugs and dependencies.'.format(i))
+
+init_pyLDT()
+
 
 def get_tau(Omega_m, zf=0):
     
@@ -60,43 +72,6 @@ def get_s2_mu(R, sigma2, sigma2_fid, s2_mu_fid):
 
     return s2_mu
 
-def sigma2(params, zvec, want_fr=False, want_dgp=False):
-    
-    Nz = len(zvec)
-
-    # Uses CAMB output at all redshifts (includes radiation perturbative and background effects--tiny for z < 2)
-    # k, _, pk_camb = compute_pk.compute_pk_gr(params, zvec)
-    # logpk_gr = [scipy.interpolate.CubicSpline(np.log(k),np.log(pk_camb[i])) for i in range(Nz)]
-    ########### testing phase ###########
-    # To get P(k) at all redshifts rescale CAMB output at z=0 with LCDM growth (neglects perturbative and background effect from radiation)
-    # This approach is more self-consistent with MG rescaling below, but could be avoided if using MGCAMB/EFTCAMB/Hi_CLASS to get P(k) in MG instead
-    k_camb, _, pk_camb = compute_pk.compute_pk_gr(params,[0.])
-    D0_lambda = scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1.,args=(params['Omega_m'],1e-10,1.),tol=1e-8,rtol=1e-8)[0]
-    Dz_lambda_norm = np.array([scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1/(1+zf),args=(params['Omega_m'],1e-10,1/(1+zf)),tol=1e-8,rtol=1e-8)[0] for zf in zvec])/D0_lambda
-    Dz_reshaped = Dz_lambda_norm.reshape(len(Dz_lambda_norm),1)
-    pk_camb_z = np.repeat(Dz_reshaped**2, len(pk_camb[0]), axis=1) * np.repeat(pk_camb, Nz, axis=0)
-    logpk_gr = [scipy.interpolate.CubicSpline(np.log(k_camb),np.log(pk_camb_z[i])) for i in range(Nz)]
-    #####################################
-    
-    def pk_gr(k,z_ix):
-        return np.exp(logpk_gr[z_ix](np.log(k)))
-
-    k_sample = np.logspace(-4,np.log10(20),num=512)
-    sigma2_gr = compute_sigma2(k_sample,Nz,pk_gr)
-
-    if want_fr:
-        # pk_fr_vec = [compute_pk.compute_pk_fr(params['Omega_m'], params['fR0'], params['n'], np.log(1/(1+zf)),k_camb,pk_camb_z[z_ix]) for z_ix,zf in enumerate(zvec)]
-        pk_fr_vec = compute_pk.compute_pk_fr_vectorized(params['Omega_m'], params['fR0'], params['n'], zvec,k_camb, pk_camb)
-        logpk_fr = [scipy.interpolate.CubicSpline(np.log(k_camb),np.log(pk_fr_vec[i])) for i in range(Nz)]
-        
-        def pk_fr(k,z_ix):
-            return np.exp(logpk_fr[z_ix](np.log(k)))
-
-        sigma2_fr = compute_sigma2(k_sample,Nz,pk_fr)
-
-        return sigma2_gr, sigma2_fr
-    else:
-        return sigma2_gr, None
 
 def sigma2_gr(params, zvec):
     
