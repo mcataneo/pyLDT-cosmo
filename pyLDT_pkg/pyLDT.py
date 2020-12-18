@@ -4,9 +4,9 @@ import scipy.integrate
 import scipy.interpolate
 import mcfit
 
-import growth_eqns
-import solve_eqns
-import compute_pk
+from . import growth_eqns
+from . import solve_eqns
+from . import compute_pk
 
 def init_pyLDT():
 #initialise all ODEs at import. Add here new ODE to initialise and increase N_models accordingly

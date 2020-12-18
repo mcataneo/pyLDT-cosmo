@@ -1,0 +1,15 @@
+numpy (pip)
+scipy (pip)
+matplotlib (pip)
+diffeqpy (pip)
+julia (dmg)
+DifferentialEquations.jl (import diffeqpy \ diffeqpy.install())
+PyCall.jl (import diffeqpy \ diffeqpy.install())
+
+Steps:
+(1) install julia (all platforms: download it from julialang.org; for macOS only you can alternatively 'brew install --cask julia' with Homebrew)
+(2) make sure your system has a recent pip installation
+(3) for a clean install of pyLDT create a virtual environment first. I will use virtualenvwrapper, but conda or any other environment manager will do
+(4) Once virtualenvwrapper is setup, create simultaneously a project and an environment (e.g., pyLDTenv) typing in terminal 'mkproject pyLDTenv'. If the envornment is not yet activated, type 'workon pyLDTenv'. This should take you directly into the pyLDTenv directory associated with the pyLDTenv project 
+(5) run 'pip install pyLDT' (hopefully at this stage all Python dependencies and Julia packages will be automatically installed too)
+(6) Go to https://github.com/mcataneo/pyLDT/tree/main and download the example jupyter notebook showing how to use pyLDT. To fully exploit the notebook functionalities you'll need to 'pip install matplotlib' first

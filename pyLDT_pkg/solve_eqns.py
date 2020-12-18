@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.interpolate
-import sph_coll_eqns as sc
-import growth_eqns as growth
+from . import sph_coll_eqns as sc
+from . import growth_eqns as growth
 from diffeqpy import de
 
 def SphEvoGR(dini,Omega_m,xi,xf):

@@ -1,6 +1,6 @@
 import camb
-import growth_eqns
-import solve_eqns
+from . import growth_eqns
+from . import solve_eqns
 import scipy.integrate
 import numpy as np
 
