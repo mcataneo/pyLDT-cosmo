@@ -13,3 +13,4 @@ Steps:
 (4) Once virtualenvwrapper is setup, create simultaneously a project and an environment (e.g., pyLDTenv) typing in terminal 'mkproject pyLDTenv'. If the envornment is not yet activated, type 'workon pyLDTenv'. This should take you directly into the pyLDTenv directory associated with the pyLDTenv project 
 (5) run 'pip install pyLDT' (hopefully at this stage all Python dependencies and Julia packages will be automatically installed too)
 (6) Go to https://github.com/mcataneo/pyLDT/tree/main and download the example jupyter notebook showing how to use pyLDT. To fully exploit the notebook functionalities you'll need to 'pip install matplotlib' first
+(7) token test
