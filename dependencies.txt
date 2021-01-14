@@ -7,10 +7,22 @@ DifferentialEquations.jl (import diffeqpy \ diffeqpy.install())
 PyCall.jl (import diffeqpy \ diffeqpy.install())
 
 Steps:
-(1) install julia (all platforms: download it from julialang.org; for macOS only you can alternatively 'brew install --cask julia' with Homebrew)
+(1) If not yet available on your machine, install julia (all platforms: download it from julialang.org; for macOS only you can alternatively 'brew install --cask julia' with Homebrew)
 (2) make sure your system has a recent pip installation
 (3) for a clean install of pyLDT create a virtual environment first. I will use virtualenvwrapper, but conda or any other environment manager will do
 (4) Once virtualenvwrapper is setup, create simultaneously a project and an environment (e.g., pyLDTenv) typing in terminal 'mkproject pyLDTenv'. If the envornment is not yet activated, type 'workon pyLDTenv'. This should take you directly into the pyLDTenv directory associated with the pyLDTenv project 
-(5) run 'pip install pyLDT' (hopefully at this stage all Python dependencies and Julia packages will be automatically installed too)
-(6) Go to https://github.com/mcataneo/pyLDT/tree/main and download the example jupyter notebook showing how to use pyLDT. To fully exploit the notebook functionalities you'll need to 'pip install matplotlib' first
-(7) token test
+(5) Install PyJulia by running 'python3 -m pip install julia'
+(6) To install the Julia packages required by PyJulia launch a Python REPL and run the following code 
+
+    >>> import julia 
+    >>> julia.install() 
+
+(7) Install diffeqpy by running 'pip install diffeqpy'
+(8) To install Julia packages required for diffeqpy, open up the Python interpreter and run
+
+    >>> import diffeqpy
+    >>> diffeqpy.install()
+
+(9) Now run 'pip install pyLDT' (hopefully at this stage all Python dependencies will be automatically installed too)
+(10) Go to https://github.com/mcataneo/pyLDT-cosmo/tree/main and download the example jupyter notebook showing how to use pyLDT. To fully exploit the notebook functionalities you'll need to 'pip install matplotlib' first
+(11) Unit tests?

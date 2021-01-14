@@ -4,14 +4,14 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="pyLDT", # Replace with your own username
-    version="0.0.1",
+    name="pyLDT-cosmo", # Replace with your own username
+    version="0.1.0",
     author="Matteo Cataneo",
     author_email="mcataneo85@gmail.com",
     description="Package for PDF calculations in Large Deviation Theory",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/mcataneo/pyLDT",
+    url="https://github.com/mcataneo/pyLDT-cosmo",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
