@@ -55,8 +55,8 @@ def compute_sigma2(kvec,Nz,pk):
         def f1(k): return 9.*pk(k,z_ix)/(4.*np.pi*k*k)
 
         F = f1(kvec)
-        DBT = mcfit.DoubleBessel(kvec,alpha=1,nu=1.5,q=-1)
-        Rvec, G = DBT(F)
+        DBT = mcfit.DoubleBessel(kvec,alpha=1,nu=1.5,q=-1,lowring=True)
+        Rvec, G = DBT(F,extrap=True)
         sigma2[z_ix] = scipy.interpolate.CubicSpline(Rvec,G/Rvec**3.)
     
     return sigma2
@@ -168,8 +168,8 @@ def get_pdf(R, z, tau, s2_mu, sigma2):
     # non-normalised PDF mean integrand
         return rho * pdf_nn(rho)
 
-    mean_mat = [[scipy.integrate.quadrature(mean_igr,0.1,10,args=(pdf_nn_mat[r_ix][z_ix]),tol=1e-8,rtol=1e-8)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
-    norm_mat = [[scipy.integrate.quadrature(pdf_nn_mat[r_ix][z_ix],0.1,10,tol=1e-8,rtol=1e-8)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
+    mean_mat = [[scipy.integrate.quadrature(mean_igr,0.1,10,args=(pdf_nn_mat[r_ix][z_ix]),tol=1e-4,rtol=1e-4,maxiter=100)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
+    norm_mat = [[scipy.integrate.quadrature(pdf_nn_mat[r_ix][z_ix],0.1,10,tol=1e-4,rtol=1e-4,maxiter=100)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
 
     def pdf(pdf_nn,mean,norm):
         rho_max = 10.
