@@ -180,4 +180,32 @@ def get_pdf(R, z, tau, s2_mu, sigma2):
 
     return pdf_mat
 
-    
+def compute_pdf(cosmo_params, z, R, cosmo_params_fid, s2_mu_gr_fid, want_fr=False, want_dgp=False):
+
+    sig2_gr_fid = init_fid(cosmo_params_fid, z)
+
+    #Compute function tau(rho) at z=0. Neglecting z-dependence only introduces inaccuracies <0.3% up to z=2
+    tau = get_tau(cosmo_params['Omega_m'], zf=0)
+
+    # compute linear and non-linear variances
+    sig2_gr, k_camb, pk_camb = sigma2_gr(cosmo_params, z)
+    s2_mu_gr = get_s2_mu(R, sig2_gr, sig2_gr_fid, s2_mu_gr_fid)
+    if want_fr: 
+        sig2_fr = sigma2_fr(cosmo_params, z, k_camb, pk_camb)
+        s2_mu_fr = get_s2_mu(R, sig2_fr, sig2_gr_fid, s2_mu_gr_fid)
+    if want_dgp: 
+        sig2_dgp = sigma2_dgp(cosmo_params, z, k_camb, pk_camb)
+        s2_mu_dgp = get_s2_mu(R, sig2_dgp, sig2_gr_fid, s2_mu_gr_fid)
+
+    # compute matter PDF
+    pdf_gr_mat = get_pdf(R, z, tau, s2_mu_gr, sig2_gr)
+    if want_fr: 
+        pdf_fr_mat = get_pdf(R, z, tau, s2_mu_fr, sig2_fr)
+    else:
+        pdf_fr_mat = None
+    if want_dgp: 
+        pdf_dgp_mat = get_pdf(R, z, tau, s2_mu_dgp, sig2_dgp)
+    else:
+        pdf_dgp_mat = None
+
+    return {'gr':pdf_gr_mat, 'fr':pdf_fr_mat, 'dgp':pdf_dgp_mat}
