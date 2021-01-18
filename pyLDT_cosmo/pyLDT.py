@@ -180,9 +180,7 @@ def get_pdf(R, z, tau, s2_mu, sigma2):
 
     return pdf_mat
 
-def compute_pdf(cosmo_params, z, R, cosmo_params_fid, s2_mu_gr_fid, want_fr=False, want_dgp=False):
-
-    sig2_gr_fid = init_fid(cosmo_params_fid, z)
+def compute_pdf(cosmo_params, z, R, sig2_gr_fid, s2_mu_gr_fid, want_fr=False, want_dgp=False):
 
     #Compute function tau(rho) at z=0. Neglecting z-dependence only introduces inaccuracies <0.3% up to z=2
     tau = get_tau(cosmo_params['Omega_m'], zf=0)
