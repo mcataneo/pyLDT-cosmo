@@ -1,7 +1,7 @@
 # pyLDT
 Python code to generate matter PDF predictions in Large Deviation Theory for LCDM and alternative cosmologies
 
-Installation and testing:
+## Installation and testing
 
 (1) If not yet available on your machine, install julia (all platforms: download it from julialang.org; for macOS only you can alternatively 'brew install --cask julia' with Homebrew)
 
@@ -29,7 +29,7 @@ Installation and testing:
 
 (10) To check everything is working as expected install pytest by issuing the command 'pip install pytest', and run 'pytest --pyargs pyLDT_cosmo'. A test routine starts cruching the numbers (it should take about 90 sec.) and if pyLDT is correctly installed it should give 1 passed tests
 
-Jupyter notebook:
+## Jupyter notebook
 
 Go to https://github.com/mcataneo/pyLDT-cosmo/tree/main and download the example jupyter notebook showing how to use pyLDT. Move the notebook into the pyLDTenv directory. To fully exploit the notebook functionalities you'll need to 'pip install matplotlib' first.
 
