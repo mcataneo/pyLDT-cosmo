@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="pyLDT-cosmo",
-    version="0.3.1",
+    version="0.3.5",
     author="Matteo Cataneo",
     author_email="mcataneo85@gmail.com",
     description="Package for PDF calculations in Large Deviation Theory",
@@ -13,7 +13,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/mcataneo/pyLDT-cosmo",
     packages=setuptools.find_packages(),
-    package_data={'pyLDT-cosmo': ['benchmarks/*.dat']},
+    package_data={'pyLDT_cosmo': ['benchmarks/*.dat']},
     install_requires=[
         'numpy>=1.19',
         'scipy>=1.5',

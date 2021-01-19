@@ -1,5 +1,5 @@
 import numpy as np
-import pyLDT_cosmo as pyLDT
+import pyLDT_cosmo.pyLDT as pyLDT
 from pkg_resources import resource_stream
 
 def test_pdf():
