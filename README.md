@@ -15,7 +15,7 @@ Python code to generate matter PDF predictions in Large Deviation Theory for LCD
 
 (3) for a clean install of pyLDT create a virtual environment first. I will use virtualenvwrapper, but conda or any other environment manager will do. For more details on how to install and configure virtualenvwrapper visit https://virtualenvwrapper.readthedocs.io/en/latest/index.html
 
-(4) Once virtualenvwrapper is setup, create simultaneously a project and an environment (e.g., pyLDTenv) typing in terminal '
+(4) Once virtualenvwrapper is setup, create simultaneously a project and an environment (e.g., pyLDTenv) typing in terminal
 
     mkproject pyLDTenv 
    
