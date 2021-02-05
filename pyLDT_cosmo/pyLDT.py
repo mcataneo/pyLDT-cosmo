@@ -183,7 +183,8 @@ def get_pdf(R, z, tau, s2_mu, sigma2):
 def compute_pdf(cosmo_params, z, R, sig2_gr_fid, s2_mu_gr_fid, want_fr=False, want_dgp=False):
 
     #Compute function tau(rho) at z=0. Neglecting z-dependence only introduces inaccuracies <0.3% up to z=2
-    tau = get_tau(cosmo_params['Omega_m'], zf=0)
+    # tau = get_tau(cosmo_params['Omega_m'], zf=0)
+    tau = get_tau(1., zf=0) # fix SC to EdS for testing purposes
 
     # compute linear and non-linear variances
     sig2_gr, k_camb, pk_camb = sigma2_gr(cosmo_params, z)
@@ -207,3 +208,73 @@ def compute_pdf(cosmo_params, z, R, sig2_gr_fid, s2_mu_gr_fid, want_fr=False, wa
         pdf_dgp_mat = None
 
     return {'gr':pdf_gr_mat, 'fr':pdf_fr_mat, 'dgp':pdf_dgp_mat}
+
+def get_pdf_test(R, z, tau, s2_mu, sigma2):
+
+    rho_vec = np.logspace(-1,1.13,500)
+
+    def get_psi(R, tau, s2_mu, sigma2):
+    # Here R, s2_mu and sigma2 refer to particular elements in the corresponding input arrays
+        psi_vec = (sigma2(R)/s2_mu) * (tau(rho_vec)**2/(2*sigma2(R*rho_vec**(1/3))))
+        return scipy.interpolate.CubicSpline(rho_vec, psi_vec)
+    
+    psi_mat = [[get_psi(rth, tau, s2_mu[r_ix,z_ix], sigma2[z_ix]) for z_ix in range(len(sigma2))] for r_ix,rth in enumerate(R)]
+
+
+    def get_pdf_nn(psi):
+    # compute non-normalised PDF
+        pdf_nn_vec = np.sqrt((psi(rho_vec,2) + psi(rho_vec,1)/rho_vec)/(2*np.pi))*np.exp(-psi(rho_vec))
+        return scipy.interpolate.CubicSpline(rho_vec, pdf_nn_vec)
+    
+    pdf_nn_mat = [[get_pdf_nn(psi_mat[r_ix][z_ix]) for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
+
+    def mean_igr(rho, pdf_nn):
+    # non-normalised PDF mean integrand
+        return rho * pdf_nn(rho)
+
+    mean_mat = [[scipy.integrate.quadrature(mean_igr,0.1,10,args=(pdf_nn_mat[r_ix][z_ix]),tol=1e-4,rtol=1e-4,maxiter=100)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
+    norm_mat = [[scipy.integrate.quadrature(pdf_nn_mat[r_ix][z_ix],0.1,10,tol=1e-4,rtol=1e-4,maxiter=100)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
+
+    def pdf(pdf_nn,mean,norm):
+        rho_max = 10.
+        pdf_vec = pdf_nn(rho_vec[rho_vec<rho_max] * mean/norm) * mean/norm**2
+        return scipy.interpolate.CubicSpline(rho_vec[rho_vec<rho_max], pdf_vec)
+
+    pdf_mat = [[pdf(pdf_nn_mat[r_ix][z_ix],mean_mat[r_ix][z_ix],norm_mat[r_ix][z_ix]) for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
+
+    return pdf_mat, mean_mat, norm_mat
+
+def compute_pdf_test(cosmo_params, z, R, sig2_gr_fid, s2_mu_gr_fid, want_fr=False, want_dgp=False):
+
+    #Compute function tau(rho) at z=0. Neglecting z-dependence only introduces inaccuracies <0.3% up to z=2
+    # tau = get_tau(cosmo_params['Omega_m'], zf=0)
+    tau = get_tau(1., zf=0) # fix SC to EdS for testing purposes
+
+    # compute linear and non-linear variances
+    sig2_gr, k_camb, pk_camb = sigma2_gr(cosmo_params, z)
+    s2_mu_gr = get_s2_mu(R, sig2_gr, sig2_gr_fid, s2_mu_gr_fid)
+    if want_fr: 
+        sig2_fr = sigma2_fr(cosmo_params, z, k_camb, pk_camb)
+        s2_mu_fr = get_s2_mu(R, sig2_fr, sig2_gr_fid, s2_mu_gr_fid)
+    if want_dgp: 
+        sig2_dgp = sigma2_dgp(cosmo_params, z, k_camb, pk_camb)
+        s2_mu_dgp = get_s2_mu(R, sig2_dgp, sig2_gr_fid, s2_mu_gr_fid)
+
+    # compute matter PDF
+    pdf_gr_mat, mean_gr_mat, norm_gr_mat = get_pdf_test(R, z, tau, s2_mu_gr, sig2_gr)
+    if want_fr: 
+        pdf_fr_mat, mean_fr_mat, norm_fr_mat = get_pdf_test(R, z, tau, s2_mu_fr, sig2_fr)
+    else:
+        pdf_fr_mat = None
+        mean_fr_mat = None
+        norm_fr_mat = None
+    if want_dgp: 
+        pdf_dgp_mat, mean_dgp_mat, norm_dgp_mat = get_pdf_test(R, z, tau, s2_mu_dgp, sig2_dgp)
+    else:
+        pdf_dgp_mat = None
+        mean_dgp_mat = None
+        norm_dgp_mat = None
+
+    return  {'gr':pdf_gr_mat, 'fr':pdf_fr_mat, 'dgp':pdf_dgp_mat}, \
+            {'gr':mean_gr_mat, 'fr':mean_fr_mat, 'dgp':mean_dgp_mat}, \
+            {'gr':norm_gr_mat, 'fr':norm_fr_mat, 'dgp':norm_dgp_mat}
