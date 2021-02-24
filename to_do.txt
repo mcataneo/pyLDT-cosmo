@@ -1,0 +1,5 @@
+- create matter_pdf(self) class 
+- move all functions in pyLDT into matter_pdf class as methods
+- in example.ipynb instantiate mPDF obejct as pyLDT.matter_pdf()
+- compute pdf as mPDF.compute_pdf(...)
+- Have a look at pyreact to get an idea of the steps and functions involved 
