@@ -168,8 +168,8 @@ def get_pdf(R, z, tau, s2_mu, sigma2):
     # non-normalised PDF mean integrand
         return rho * pdf_nn(rho)
 
-    mean_mat = [[scipy.integrate.quadrature(mean_igr,0.1,10,args=(pdf_nn_mat[r_ix][z_ix]),tol=1e-4,rtol=1e-4,maxiter=100)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
-    norm_mat = [[scipy.integrate.quadrature(pdf_nn_mat[r_ix][z_ix],0.1,10,tol=1e-4,rtol=1e-4,maxiter=100)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
+    mean_mat = [[scipy.integrate.quadrature(mean_igr,0.1,10,args=(pdf_nn_mat[r_ix][z_ix]),tol=1e-5,rtol=1e-5,maxiter=100)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
+    norm_mat = [[scipy.integrate.quadrature(pdf_nn_mat[r_ix][z_ix],0.1,10,tol=1e-5,rtol=1e-5,maxiter=100)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
 
     def pdf(pdf_nn,mean,norm):
         rho_max = 10.
@@ -183,8 +183,8 @@ def get_pdf(R, z, tau, s2_mu, sigma2):
 def compute_pdf(cosmo_params, z, R, sig2_gr_fid, s2_mu_gr_fid, want_fr=False, want_dgp=False):
 
     #Compute function tau(rho) at z=0. Neglecting z-dependence only introduces inaccuracies <0.3% up to z=2
-    # tau = get_tau(cosmo_params['Omega_m'], zf=0)
-    tau = get_tau(1., zf=0) # fix SC to EdS for testing purposes
+    tau = get_tau(cosmo_params['Omega_m'], zf=0)
+    # tau = get_tau(1., zf=0) # fix SC to EdS for testing purposes
 
     # compute linear and non-linear variances
     sig2_gr, k_camb, pk_camb = sigma2_gr(cosmo_params, z)
@@ -232,8 +232,8 @@ def get_pdf_test(R, z, tau, s2_mu, sigma2):
     # non-normalised PDF mean integrand
         return rho * pdf_nn(rho)
 
-    mean_mat = [[scipy.integrate.quadrature(mean_igr,0.1,10,args=(pdf_nn_mat[r_ix][z_ix]),tol=1e-4,rtol=1e-4,maxiter=100)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
-    norm_mat = [[scipy.integrate.quadrature(pdf_nn_mat[r_ix][z_ix],0.1,10,tol=1e-4,rtol=1e-4,maxiter=100)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
+    mean_mat = [[scipy.integrate.quadrature(mean_igr,0.1,10,args=(pdf_nn_mat[r_ix][z_ix]),tol=1e-5,rtol=1e-5,maxiter=100)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
+    norm_mat = [[scipy.integrate.quadrature(pdf_nn_mat[r_ix][z_ix],0.1,10,tol=1e-5,rtol=1e-5,maxiter=100)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
 
     def pdf(pdf_nn,mean,norm):
         rho_max = 10.
@@ -247,8 +247,8 @@ def get_pdf_test(R, z, tau, s2_mu, sigma2):
 def compute_pdf_test(cosmo_params, z, R, sig2_gr_fid, s2_mu_gr_fid, want_fr=False, want_dgp=False):
 
     #Compute function tau(rho) at z=0. Neglecting z-dependence only introduces inaccuracies <0.3% up to z=2
-    # tau = get_tau(cosmo_params['Omega_m'], zf=0)
-    tau = get_tau(1., zf=0) # fix SC to EdS for testing purposes
+    tau = get_tau(cosmo_params['Omega_m'], zf=0)
+    # tau = get_tau(1., zf=0) # fix SC to EdS for testing purposes
 
     # compute linear and non-linear variances
     sig2_gr, k_camb, pk_camb = sigma2_gr(cosmo_params, z)
