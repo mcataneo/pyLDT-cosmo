@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="pyLDT-cosmo",
-    version="0.3.10",
+    version="0.3.12",
     author="Matteo Cataneo",
     author_email="mcataneo85@gmail.com",
     description="Package for PDF calculations in Large Deviation Theory",

@@ -47,6 +47,12 @@ def get_tau(Omega_m, zf=0):
 
     return solve_eqns.calc_tau_gr(dini_vec, dlin_vec, Omega_m, xi, xf)
 
+    # def tau_powlaw(rho):
+    #     nu = 21./13
+    #     return nu * (1 - rho**(-1/nu))
+
+    # return tau_powlaw
+
 def compute_sigma2(kvec,Nz,pk):
 
     sigma2 = [None for _ in range(Nz)]
@@ -58,7 +64,7 @@ def compute_sigma2(kvec,Nz,pk):
         DBT = mcfit.DoubleBessel(kvec,alpha=1,nu=1.5,q=-1,lowring=True)
         Rvec, G = DBT(F,extrap=True)
         sigma2[z_ix] = scipy.interpolate.CubicSpline(Rvec,G/Rvec**3.)
-    
+
     return sigma2
 
 def get_s2_mu(R, sigma2, sigma2_fid, s2_mu_fid):
@@ -147,7 +153,8 @@ def init_fid(params, zvec):
 
 def get_pdf(R, z, tau, s2_mu, sigma2):
 
-    rho_vec = np.logspace(-1,1.13,500)
+    # rho_vec = np.logspace(-1,1.13,500)
+    rho_vec = np.linspace(0.1,13.5,1000)
 
     def get_psi(R, tau, s2_mu, sigma2):
     # Here R, s2_mu and sigma2 refer to particular elements in the corresponding input arrays
@@ -156,6 +163,8 @@ def get_pdf(R, z, tau, s2_mu, sigma2):
     
     psi_mat = [[get_psi(rth, tau, s2_mu[r_ix,z_ix], sigma2[z_ix]) for z_ix in range(len(sigma2))] for r_ix,rth in enumerate(R)]
 
+    # [[np.savetxt('/Users/matteoc/Desktop/psi_quijote/'+'psi_z'+str(zin)+'_R'+str(Rin)+'.dat', list(zip(rho_vec, psi_mat[r_ix][z_ix](rho_vec))),
+    #             delimiter='\t', header='rho \t psi') for z_ix,zin in enumerate(z) for r_ix,Rin in enumerate(R)]]
 
     def get_pdf_nn(psi):
     # compute non-normalised PDF
@@ -164,12 +173,17 @@ def get_pdf(R, z, tau, s2_mu, sigma2):
     
     pdf_nn_mat = [[get_pdf_nn(psi_mat[r_ix][z_ix]) for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
 
+    # [[np.savetxt('/Users/matteoc/Desktop/raw_pdf_quijote_lin_sampling/'+'raw_pdf_z'+str(zin)+'_R'+str(Rin)+'.dat', list(zip(rho_vec, pdf_nn_mat[r_ix][z_ix](rho_vec))),
+    #             delimiter='\t', header='rho \t pdf') for z_ix,zin in enumerate(z) for r_ix,Rin in enumerate(R)]]
+
     def mean_igr(rho, pdf_nn):
     # non-normalised PDF mean integrand
         return rho * pdf_nn(rho)
 
-    mean_mat = [[scipy.integrate.quadrature(mean_igr,0.1,10,args=(pdf_nn_mat[r_ix][z_ix]),tol=1e-7,rtol=1e-7,maxiter=200)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
-    norm_mat = [[scipy.integrate.quadrature(pdf_nn_mat[r_ix][z_ix],0.1,10,tol=1e-7,rtol=1e-7,maxiter=200)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
+    # mean_mat = [[scipy.integrate.quadrature(mean_igr,0.1,10,args=(pdf_nn_mat[r_ix][z_ix]),tol=5e-7,rtol=5e-7,maxiter=500)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
+    # norm_mat = [[scipy.integrate.quadrature(pdf_nn_mat[r_ix][z_ix],0.1,10,tol=5e-7,rtol=5e-7,maxiter=500)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
+    mean_mat = [[scipy.integrate.quad(mean_igr,0.1,10,args=(pdf_nn_mat[r_ix][z_ix]),epsabs=1e-4,epsrel=1e-4,limit=50)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
+    norm_mat = [[scipy.integrate.quad(pdf_nn_mat[r_ix][z_ix],0.1,10,epsabs=1e-4,epsrel=1e-4,limit=50)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
 
     def pdf(pdf_nn,mean,norm):
         rho_max = 10.
@@ -177,6 +191,9 @@ def get_pdf(R, z, tau, s2_mu, sigma2):
         return scipy.interpolate.CubicSpline(rho_vec[rho_vec<rho_max], pdf_vec)
 
     pdf_mat = [[pdf(pdf_nn_mat[r_ix][z_ix],mean_mat[r_ix][z_ix],norm_mat[r_ix][z_ix]) for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
+
+    # [[np.savetxt('/Users/matteoc/Desktop/pdf_quijote_lin_sampling/'+'pdf_z'+str(zin)+'_R'+str(Rin)+'.dat', list(zip(rho_vec, pdf_mat[r_ix][z_ix](rho_vec))),
+    #             delimiter='\t', header='rho \t pdf') for z_ix,zin in enumerate(z) for r_ix,Rin in enumerate(R)]]
 
     return pdf_mat
 
@@ -209,6 +226,8 @@ def compute_pdf(cosmo_params, z, R, sig2_gr_fid, s2_mu_gr_fid, want_fr=False, wa
 
     return {'gr':pdf_gr_mat, 'fr':pdf_fr_mat, 'dgp':pdf_dgp_mat}
 
+######################### Test functions below #########################
+
 def get_pdf_test(R, z, tau, s2_mu, sigma2):
 
     rho_vec = np.logspace(-1,1.13,500)
@@ -232,8 +251,8 @@ def get_pdf_test(R, z, tau, s2_mu, sigma2):
     # non-normalised PDF mean integrand
         return rho * pdf_nn(rho)
 
-    mean_mat = [[scipy.integrate.quadrature(mean_igr,0.1,10,args=(pdf_nn_mat[r_ix][z_ix]),tol=1e-7,rtol=1e-7,maxiter=200)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
-    norm_mat = [[scipy.integrate.quadrature(pdf_nn_mat[r_ix][z_ix],0.1,10,tol=1e-8,rtol=1e-7,maxiter=200)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
+    mean_mat = [[scipy.integrate.quadrature(mean_igr,0.1,10,args=(pdf_nn_mat[r_ix][z_ix]),tol=5e-6,rtol=5e-6,maxiter=400)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
+    norm_mat = [[scipy.integrate.quadrature(pdf_nn_mat[r_ix][z_ix],0.1,10,tol=5e-6,rtol=5e-6,maxiter=400)[0] for z_ix in range(len(sigma2))] for r_ix in range(len(R))]
 
     def pdf(pdf_nn,mean,norm):
         rho_max = 10.
