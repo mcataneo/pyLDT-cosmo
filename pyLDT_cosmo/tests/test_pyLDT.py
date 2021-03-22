@@ -9,8 +9,8 @@ def test_pdf():
     pdf_z0p5 = np.loadtxt(resource_stream('pyLDT_cosmo', 'benchmarks/pdf_gr_z0.5_R10.dat'))
     pdf_z1 = np.loadtxt(resource_stream('pyLDT_cosmo', 'benchmarks/pdf_gr_z1.0_R10.dat'))
 
-    z = np.array([0., 0.5, 1.]) # output redshifts
-    R = np.array([10.]) # radius of top-hat smoothing filter in Mpc/h
+    z = [0., 0.5, 1.] # output redshifts
+    R = [10.] # radius of top-hat smoothing filter in Mpc/h
     cosmo_params_fid = {'Omega_m': 0.31315, 'Omega_b': 0.0492, 'A_s': 2.0968e-9, 'n_s': 0.9652, 'h': 67.37}
     s2_mu_gr_fid = np.array([[0.391930, 0.252758, 0.166748]])
     mPDF = pyLDT.matter_pdf(cosmo_params_fid, z, R, s2_mu_gr_fid)
