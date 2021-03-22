@@ -20,15 +20,6 @@ def calc_tau_gr(dini_vec,dlin_vec,Omega_m,xi,xf):
 
     return scipy.interpolate.CubicSpline(dNL_vec,dlin_vec)
 
-def calc_growth_fr(Omega_m,fR0,n,k,xf):
-    gi = [1.,0.]
-    xi = np.log(1e-10)
-    x_eval = (xi,xf)   
-    params = [Omega_m,fR0,n,k]
-    ode_growth = de.ODEProblem(growth.jul_rhs_growth_fr, gi, x_eval, params)
-    sol_growth = de.solve(ode_growth, save_everystep=False, save_start=False, abstol=1e-8, reltol=1e-8)
-    return sol_growth.u[0][0]
-
 def calc_growth_fr_full(Omega_m,fR0,n,k,xf):
     gi = [1.,0.]
     xi = np.log(1e-10)

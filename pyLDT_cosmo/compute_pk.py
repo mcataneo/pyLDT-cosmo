@@ -19,25 +19,6 @@ def compute_pk_gr(params, zf):
     return results.get_linear_matter_power_spectrum()
 
 
-def compute_pk_fr(Omega_m,fR0,n,xf,kvec,pk_gr):
-    """Takes GR matter power spectrum pk_gr[ix] at z=zf. Make sure to use corresponding index ix for CAMB output."""
-
-    z_trans = 127
-    a_trans = 1/(1+z_trans)
-    ai = 1e-5
-    growth_lcdm_trans = scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,a_trans,args=(Omega_m,ai,a_trans),tol=1e-8,rtol=1e-8)[0]
-    growth_lcdm_fin = scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,np.exp(xf),args=(Omega_m,ai,np.exp(xf)),tol=1e-8,rtol=1e-8)[0]
-    D_lcdm = growth_lcdm_trans/growth_lcdm_fin # LCDM growth normalized at a=af
-
-    pk_fr = np.zeros(kvec.shape)    
-    for i,k in enumerate(kvec):
-        growth_fr = solve_eqns.calc_growth_fr(Omega_m,fR0,n,k,xf)
-        D_fr = growth_fr * np.exp(xf)/a_trans
-        pk_fr[i] = D_fr**2 * D_lcdm**2 * pk_gr[i]
-    
-    return pk_fr
-    
-
 def compute_pk_fr_vectorized(Omega_m,fR0,n,zvec,kvec,pk_gr):
     """Takes GR matter power spectrum pk_gr at z=0."""
 
