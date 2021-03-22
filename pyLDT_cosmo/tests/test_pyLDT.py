@@ -2,14 +2,6 @@ import numpy as np
 import pyLDT_cosmo.pyLDT as pyLDT
 from pkg_resources import resource_stream
 
-import sys, os 
-is_conda = os.path.exists(os.path.join(sys.prefix, 'conda-meta'))
-
-# if running pyLDT from conda environment disable compilation to avoid conflicts
-if is_conda:
-    from julia.api import Julia
-    jl = Julia(compiled_modules=False)
-
 def test_pdf():
     #load benchmarks
     rho = np.loadtxt(resource_stream('pyLDT_cosmo', 'benchmarks/rho.dat'))

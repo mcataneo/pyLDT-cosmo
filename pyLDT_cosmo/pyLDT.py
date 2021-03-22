@@ -8,6 +8,14 @@ from . import growth_eqns
 from . import solve_eqns
 from . import compute_pk
 
+# if running pyLDT from conda environment disable compilation to avoid conflicts
+import sys, os 
+is_conda = os.path.exists(os.path.join(sys.prefix, 'conda-meta'))
+if is_conda:
+    from julia.api import Julia
+    jl = Julia(compiled_modules=False)
+
+
 def init_ode():
 #initialise all ODEs at import. Add here new ODE to initialise and increase N_models accordingly
     N_models = 3
