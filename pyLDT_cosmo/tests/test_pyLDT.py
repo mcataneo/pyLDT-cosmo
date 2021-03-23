@@ -2,6 +2,7 @@ import numpy as np
 import pyLDT_cosmo.pyLDT as pyLDT
 from pkg_resources import resource_stream
 
+
 def test_pdf():
     #load benchmarks
     rho = np.loadtxt(resource_stream('pyLDT_cosmo', 'benchmarks/rho.dat'))

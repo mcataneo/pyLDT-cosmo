@@ -1,3 +1,10 @@
+# if running pyLDT from conda environment disable compilation to avoid conflicts
+import sys, os 
+is_conda = os.path.exists(os.path.join(sys.prefix, 'conda-meta'))
+if is_conda:
+    from julia.api import Julia
+    jl = Julia(compiled_modules=False)
+
 import numpy as np
 import scipy.optimize
 import scipy.integrate
@@ -7,13 +14,6 @@ import mcfit
 from . import growth_eqns
 from . import solve_eqns
 from . import compute_pk
-
-# if running pyLDT from conda environment disable compilation to avoid conflicts
-import sys, os 
-is_conda = os.path.exists(os.path.join(sys.prefix, 'conda-meta'))
-if is_conda:
-    from julia.api import Julia
-    jl = Julia(compiled_modules=False)
 
 
 def init_ode():
