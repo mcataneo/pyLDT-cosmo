@@ -3,9 +3,18 @@ import setuptools
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
+with open(join(dirname(__file__), 'package_name', '__init__.py')) as fp:
+    for line in fp:
+        m = re.search(r'^\s*__version__\s*=\s*([\'"])([^\'"]+)\1\s*$', line)
+        if m:
+            version = m.group(2)
+            break
+    else:
+        raise RuntimeError('Unable to find own __version__ string')
+
 setuptools.setup(
     name="pyLDT-cosmo",
-    version="0.4.1",
+    version=version,
     author="Matteo Cataneo",
     author_email="mcataneo85@gmail.com",
     description="Package for PDF calculations in Large Deviation Theory",
