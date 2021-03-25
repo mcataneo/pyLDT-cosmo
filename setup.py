@@ -1,9 +1,11 @@
 import setuptools
+import os
+import re
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-with open(join(dirname(__file__), 'package_name', '__init__.py')) as fp:
+with open(os.path.join(os.path.dirname(__file__), 'pyLDT_cosmo', '__init__.py')) as fp:
     for line in fp:
         m = re.search(r'^\s*__version__\s*=\s*([\'"])([^\'"]+)\1\s*$', line)
         if m:
