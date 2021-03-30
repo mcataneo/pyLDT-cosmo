@@ -1,11 +1,11 @@
 import numpy as np
 from julia import Main
 
-def E(a, Omega_m):
-    return np.sqrt(Omega_m/a**3 + (1-Omega_m))
+def E(a, Omega_m, w0, wa):
+    return np.sqrt(Omega_m/a**3. + (1.-Omega_m) * a**(-3.*(1.+w0+wa)) * np.exp(-3*wa*(1.-a)))
 
-def growth_int(a, Omega_m, ai, af):
-    return 2.5*Omega_m*E(af,Omega_m)/ai*1/(a*E(a,Omega_m))**3
+def growth_int(a, Omega_m, w0, wa, ai, af):
+    return 2.5*Omega_m*E(af,Omega_m,w0,wa)/ai*1/(a*E(a,Omega_m,w0,wa))**3
 
 jul_rhs_growth_fr = Main.eval("""
     function growth_fr(dy,y,p,x)

@@ -50,9 +50,10 @@ class matter_pdf:
 
         # To get P(k) at all redshifts rescale CAMB output at z=0 with LCDM growth (neglects perturbative and background effect from radiation)
         # This approach is more self-consistent with MG rescaling below, but could be avoided if using MGCAMB/EFTCAMB/Hi_CLASS to get P(k) in MG instead
-        k_camb, _, pk_camb = compute_pk.compute_pk_gr(params,[0.])
-        D0_lambda = scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1.,args=(params['Omega_m'],1e-10,1.),tol=1e-8,rtol=1e-8)[0]
-        Dz_lambda_norm = np.array([scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1/(1+zf),args=(params['Omega_m'],1e-10,1/(1+zf)),tol=1e-8,rtol=1e-8)[0] for zf in zvec])/D0_lambda
+        k_camb, _, pk_camb = compute_pk.compute_pk_lcdm(params,[0.])
+        D0_lambda = scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1.,args=(params['Omega_m'],-1.,0.,1e-10,1.),tol=1e-8,rtol=1e-8)[0]
+        Dz_lambda_norm = np.array([scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1/(1+zf),args=(params['Omega_m'],-1.,0.,1e-10,1/(1+zf)), \
+                                    tol=1e-8,rtol=1e-8)[0] for zf in zvec])/D0_lambda
         Dz_reshaped = Dz_lambda_norm.reshape(len(Dz_lambda_norm),1)
         pk_camb_z = np.repeat(Dz_reshaped**2, len(pk_camb[0]), axis=1) * np.repeat(pk_camb, Nz, axis=0)
         logpk = [scipy.interpolate.CubicSpline(np.log(k_camb),np.log(pk_camb_z[i])) for i in range(Nz)]
@@ -89,7 +90,7 @@ class matter_pdf:
         dlin_vec2 = np.linspace(1e-4,dlin_max,N_dlin2)
         dlin_vec = np.concatenate((dlin_vec1,dlin_vec2))
 
-        D_lambda = scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,af,args=(Omega_m,ai,af),tol=1e-8,rtol=1e-8)[0]
+        D_lambda = scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,af,args=(Omega_m,-1.,0.,ai,af),tol=1e-8,rtol=1e-8)[0]
         dini_vec = dlin_vec/D_lambda
 
         return solve_eqns.calc_tau_gr(dini_vec, dlin_vec, Omega_m, xi, xf)
@@ -130,18 +131,19 @@ class matter_pdf:
         return s2_mu
     
 
-    def sigma2_gr(self, params):
+    def sigma2_lcdm(self, params):
         """
-        Compute a list of length Nz of sigma_lin^2(R,z[i]) functions for GR given an input cosmology and 
+        Compute a list of length Nz of sigma_lin^2(R,z[i]) functions for LCDM given an input cosmology and 
         also returns the z=0 GR linear matter power spectrum and wavenumbers. 
         """
 
         Nz = len(self.z)
         # To get P(k) at all redshifts rescale CAMB output at z=0 with LCDM growth (i.e. neglects perturbative and background effect from radiation)
         # This approach is more self-consistent with MG rescaling below, but could be avoided if using MGCAMB/EFTCAMB/Hi_CLASS to get P(k) in MG instead
-        k_camb, _, pk_camb = compute_pk.compute_pk_gr(params,[0.])
-        D0_lambda = scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1.,args=(params['Omega_m'],1e-10,1.),tol=1e-8,rtol=1e-8)[0]
-        Dz_lambda_norm = np.array([scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1/(1+zf),args=(params['Omega_m'],1e-10,1/(1+zf)),tol=1e-8,rtol=1e-8)[0] for zf in self.z])/D0_lambda
+        k_camb, _, pk_camb = compute_pk.compute_pk_lcdm(params,[0.])
+        D0_lambda = scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1.,args=(params['Omega_m'],-1.,0.,1e-10,1.),tol=1e-8,rtol=1e-8)[0]
+        Dz_lambda_norm = np.array([scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1/(1+zf),args=(params['Omega_m'],-1.,0.,1e-10,1/(1+zf)), \
+                                    tol=1e-8,rtol=1e-8)[0] for zf in self.z])/D0_lambda
         Dz_reshaped = Dz_lambda_norm.reshape(len(Dz_lambda_norm),1)
         pk_camb_z = np.repeat(Dz_reshaped**2, len(pk_camb[0]), axis=1) * np.repeat(pk_camb, Nz, axis=0)
         logpk = [scipy.interpolate.CubicSpline(np.log(k_camb),np.log(pk_camb_z[i])) for i in range(Nz)]
@@ -154,16 +156,40 @@ class matter_pdf:
 
         return sigma2, k_camb, pk_camb
 
+    def sigma2_wcdm(self, params):
+        """
+        Compute a list of length Nz of sigma_lin^2(R,z[i]) functions for wCDM given an input cosmology.
+        """
 
-    def sigma2_fr(self, params, kvec, pk_gr):
+        Nz = len(self.z)
+        # To get P(k) at all redshifts rescale CAMB output at z=0 with LCDM growth (i.e. neglects perturbative and background effect from radiation)
+        # This approach is more self-consistent with MG rescaling below, but could be avoided if using MGCAMB/EFTCAMB/Hi_CLASS to get P(k) in MG instead
+        k_camb, _, pk_camb = compute_pk.compute_pk_wcdm(params,[0.])
+        D0_wcdm = scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1.,args=(params['Omega_m'],params['w0'],params['wa'],1e-10,1.),tol=1e-8,rtol=1e-8)[0]
+        Dz_wcdm_norm = np.array([scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1/(1+zf),args=(params['Omega_m'],params['w0'],params['wa'],1e-10,1/(1+zf)), \
+                                    tol=1e-8,rtol=1e-8)[0] for zf in self.z])/D0_wcdm
+        Dz_reshaped = Dz_wcdm_norm.reshape(len(Dz_wcdm_norm),1)
+        pk_camb_z = np.repeat(Dz_reshaped**2, len(pk_camb[0]), axis=1) * np.repeat(pk_camb, Nz, axis=0)
+        logpk = [scipy.interpolate.CubicSpline(np.log(k_camb),np.log(pk_camb_z[i])) for i in range(Nz)]
+
+        def pk(k,z_ix):
+            return np.exp(logpk[z_ix](np.log(k)))
+
+        k_sample = np.logspace(-4,np.log10(20),num=512)
+        sigma2 = self.compute_sigma2(k_sample,Nz,pk)
+
+        return sigma2
+
+
+    def sigma2_fr(self, params, kvec, pk_lcdm):
         """
         Compute a list of length Nz of sigma_lin^2(R,z[i]) functions for f(R) gravity given an input cosmology 
-        and GR linear power spectrum at z=0
+        and LCDM linear power spectrum at z=0
         """
 
         Nz = len(self.z)
 
-        pk_vec = compute_pk.compute_pk_fr_vectorized(params['Omega_m'], params['fR0'], params['n'], self.z, kvec, pk_gr)
+        pk_vec = compute_pk.compute_pk_fr_vectorized(params['Omega_m'], params['fR0'], params['n'], self.z, kvec, pk_lcdm)
         logpk = [scipy.interpolate.CubicSpline(np.log(kvec),np.log(pk_vec[i])) for i in range(Nz)]
 
         def pk(k,z_ix):
@@ -175,7 +201,7 @@ class matter_pdf:
         return sigma2
 
 
-    def sigma2_dgp(self, params, kvec, pk_gr):
+    def sigma2_dgp(self, params, kvec, pk_lcdm):
         """
         Compute a list of length Nz of sigma_lin^2(R,z[i]) functions for nDGP gravity given an input cosmology 
         and GR linear power spectrum at z=0
@@ -183,7 +209,7 @@ class matter_pdf:
 
         Nz = len(self.z)
 
-        pk_vec = compute_pk.compute_pk_dgp_vectorized(params['Omega_m'], params['rcH0'], self.z, pk_gr)
+        pk_vec = compute_pk.compute_pk_dgp_vectorized(params['Omega_m'], params['rcH0'], self.z, pk_lcdm)
         logpk = [scipy.interpolate.CubicSpline(np.log(kvec),np.log(pk_vec[i])) for i in range(Nz)]
 
         def pk(k,z_ix):
@@ -240,27 +266,34 @@ class matter_pdf:
         return pdf_mat
 
 
-    def compute_pdf(self, cosmo_params, models=['gr']):
+    def compute_pdf(self, cosmo_params, models=['lcdm']):
         """
         Compute matter PDF for requested cosmo_params and models. The output is a dictionary with keys 'gr' and/or 'fr' and/or 'dgp'. 
         Each value is a matrix [i][j] where [i] runs over (increasing) smoothing radius and [j] over (increasing) redshifts.
         """
 
         # compute linear and non-linear variances
-        sig2_gr, k_camb, pk_camb = self.sigma2_gr(cosmo_params)
-        s2_mu_gr = self.get_s2_mu(sig2_gr)
+        if 'wcdm' in models:
+            sig2_wcdm = self.sigma2_wcdm(cosmo_params)
+            s2_mu_wcdm = self.get_s2_mu(sig2_wcdm)    
+        if 'lcdm' in models or 'fr' in models or 'dgp' in models:
+            sig2_lcdm, k_lcdm, pk_lcdm = self.sigma2_lcdm(cosmo_params)
+            s2_mu_lcdm = self.get_s2_mu(sig2_lcdm)
         if 'fr' in models: 
-            sig2_fr = self.sigma2_fr(cosmo_params, k_camb, pk_camb)
+            sig2_fr = self.sigma2_fr(cosmo_params, k_lcdm, pk_lcdm)
             s2_mu_fr = self.get_s2_mu(sig2_fr)
         if 'dgp' in models: 
-            sig2_dgp = self.sigma2_dgp(cosmo_params, k_camb, pk_camb)
+            sig2_dgp = self.sigma2_dgp(cosmo_params, k_lcdm, pk_lcdm)
             s2_mu_dgp = self.get_s2_mu(sig2_dgp)
 
         # compute matter PDF
         pdf_dict = {}
-        if 'gr' in models:
-            pdf_gr_mat = self.get_pdf(s2_mu_gr, sig2_gr)
-            pdf_dict['gr'] = pdf_gr_mat
+        if 'lcdm' in models:
+            pdf_lcdm_mat = self.get_pdf(s2_mu_lcdm, sig2_lcdm)
+            pdf_dict['lcdm'] = pdf_lcdm_mat
+        if 'wcdm' in models:
+            pdf_wcdm_mat = self.get_pdf(s2_mu_wcdm, sig2_wcdm)
+            pdf_dict['wcdm'] = pdf_wcdm_mat
         if 'fr' in models: 
             pdf_fr_mat = self.get_pdf(s2_mu_fr, sig2_fr)
             pdf_dict['fr'] = pdf_fr_mat
