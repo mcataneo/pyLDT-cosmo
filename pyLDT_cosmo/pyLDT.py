@@ -49,10 +49,10 @@ class matter_pdf:
         Nz = len(zvec)
 
         # To get P(k) at all redshifts rescale CAMB output at z=0 with LCDM growth (neglects perturbative and background effect from radiation)
-        # This approach is more self-consistent with MG rescaling below, but could be avoided if using MGCAMB/EFTCAMB/Hi_CLASS to get P(k) in MG instead
+        # This approach is more consistent with MG rescaling below, but could be avoided if using MGCAMB/EFTCAMB/Hi_CLASS to get P(k) in MG instead
         k_camb, _, pk_camb = compute_pk.compute_pk_lcdm(params,[0.])
-        D0_lambda = scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1.,args=(params['Omega_m'],-1.,0.,1e-10,1.),tol=1e-8,rtol=1e-8)[0]
-        Dz_lambda_norm = np.array([scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1/(1+zf),args=(params['Omega_m'],-1.,0.,1e-10,1/(1+zf)), \
+        D0_lambda = scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1.,args=(params['Omega_m'],1e-10,1.),tol=1e-8,rtol=1e-8)[0]
+        Dz_lambda_norm = np.array([scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1/(1+zf),args=(params['Omega_m'],1e-10,1/(1+zf)), \
                                     tol=1e-8,rtol=1e-8)[0] for zf in zvec])/D0_lambda
         Dz_reshaped = Dz_lambda_norm.reshape(len(Dz_lambda_norm),1)
         pk_camb_z = np.repeat(Dz_reshaped**2, len(pk_camb[0]), axis=1) * np.repeat(pk_camb, Nz, axis=0)
@@ -90,7 +90,7 @@ class matter_pdf:
         dlin_vec2 = np.linspace(1e-4,dlin_max,N_dlin2)
         dlin_vec = np.concatenate((dlin_vec1,dlin_vec2))
 
-        D_lambda = scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,af,args=(Omega_m,-1.,0.,ai,af),tol=1e-8,rtol=1e-8)[0]
+        D_lambda = scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,af,args=(Omega_m,ai,af),tol=1e-8,rtol=1e-8)[0]
         dini_vec = dlin_vec/D_lambda
 
         return solve_eqns.calc_tau_gr(dini_vec, dlin_vec, Omega_m, xi, xf)
@@ -139,10 +139,10 @@ class matter_pdf:
 
         Nz = len(self.z)
         # To get P(k) at all redshifts rescale CAMB output at z=0 with LCDM growth (i.e. neglects perturbative and background effect from radiation)
-        # This approach is more self-consistent with MG rescaling below, but could be avoided if using MGCAMB/EFTCAMB/Hi_CLASS to get P(k) in MG instead
+        # This approach is more consistent with MG rescaling below, but could be avoided if using MGCAMB/EFTCAMB/Hi_CLASS to get P(k) in MG instead
         k_camb, _, pk_camb = compute_pk.compute_pk_lcdm(params,[0.])
-        D0_lambda = scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1.,args=(params['Omega_m'],-1.,0.,1e-10,1.),tol=1e-8,rtol=1e-8)[0]
-        Dz_lambda_norm = np.array([scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1/(1+zf),args=(params['Omega_m'],-1.,0.,1e-10,1/(1+zf)), \
+        D0_lambda = scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1.,args=(params['Omega_m'],1e-10,1.),tol=1e-8,rtol=1e-8)[0]
+        Dz_lambda_norm = np.array([scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1/(1+zf),args=(params['Omega_m'],1e-10,1/(1+zf)), \
                                     tol=1e-8,rtol=1e-8)[0] for zf in self.z])/D0_lambda
         Dz_reshaped = Dz_lambda_norm.reshape(len(Dz_lambda_norm),1)
         pk_camb_z = np.repeat(Dz_reshaped**2, len(pk_camb[0]), axis=1) * np.repeat(pk_camb, Nz, axis=0)
@@ -160,16 +160,10 @@ class matter_pdf:
         """
         Compute a list of length Nz of sigma_lin^2(R,z[i]) functions for wCDM given an input cosmology.
         """
-
+        
         Nz = len(self.z)
-        # To get P(k) at all redshifts rescale CAMB output at z=0 with LCDM growth (i.e. neglects perturbative and background effect from radiation)
-        # This approach is more self-consistent with MG rescaling below, but could be avoided if using MGCAMB/EFTCAMB/Hi_CLASS to get P(k) in MG instead
-        k_camb, _, pk_camb = compute_pk.compute_pk_wcdm(params,[0.])
-        D0_wcdm = scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1.,args=(params['Omega_m'],params['w0'],params['wa'],1e-10,1.),tol=1e-8,rtol=1e-8)[0]
-        Dz_wcdm_norm = np.array([scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1/(1+zf),args=(params['Omega_m'],params['w0'],params['wa'],1e-10,1/(1+zf)), \
-                                    tol=1e-8,rtol=1e-8)[0] for zf in self.z])/D0_wcdm
-        Dz_reshaped = Dz_wcdm_norm.reshape(len(Dz_wcdm_norm),1)
-        pk_camb_z = np.repeat(Dz_reshaped**2, len(pk_camb[0]), axis=1) * np.repeat(pk_camb, Nz, axis=0)
+        # Get P(k,z) at all redshifts with CAMB
+        k_camb, _, pk_camb_z = compute_pk.compute_pk_wcdm(params, self.z)
         logpk = [scipy.interpolate.CubicSpline(np.log(k_camb),np.log(pk_camb_z[i])) for i in range(Nz)]
 
         def pk(k,z_ix):
@@ -268,7 +262,7 @@ class matter_pdf:
 
     def compute_pdf(self, cosmo_params, models=['lcdm']):
         """
-        Compute matter PDF for requested cosmo_params and models. The output is a dictionary with keys 'gr' and/or 'fr' and/or 'dgp'. 
+        Compute matter PDF for requested cosmo_params and models. The output is a dictionary with keys 'lcdm' and/or 'wcdm' and/or 'fr' and/or 'dgp'. 
         Each value is a matrix [i][j] where [i] runs over (increasing) smoothing radius and [j] over (increasing) redshifts.
         """
 

@@ -26,10 +26,10 @@ def compute_pk_wcdm(params, zf):
 
     pars = camb.CAMBparams()
     pars.set_cosmology(H0=params['h'], ombh2=ombh2, omch2=omch2, mnu=0., tau=0.09)
-    pars.set_dark_energy(w=params['w0'], wa=params['wa'], dark_energy_model='ppf')
+    pars.set_dark_energy(w=params['w0'], wa=params['wa'], cs2=1, dark_energy_model='ppf')
     pars.InitPower.set_params(As=params['A_s'], ns=params['n_s'])
     pars.set_accuracy(AccuracyBoost=1)
-    pars.set_matter_power(redshifts=zf, kmax=20, k_per_logint=0, nonlinear=False)
+    pars.set_matter_power(redshifts=zf, kmax=20, k_per_logint=0, nonlinear=False, silent=True)
     #Linear power spectrum
     results = camb.get_results(pars)
     return results.get_linear_matter_power_spectrum()
@@ -42,8 +42,8 @@ def compute_pk_fr_vectorized(Omega_m,fR0,n,zvec,kvec,pk_gr):
     z_trans = 127
     a_trans = 1/(1+z_trans)
     ai = 1e-10
-    growth_lcdm_trans = scipy.integrate.quadrature(growth_eqns.growth_int,ai,a_trans,args=(Omega_m,-1.,0.,ai,a_trans),tol=1e-8,rtol=1e-8)[0]
-    growth_lcdm_fin = scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1,args=(Omega_m,-1.,0.,ai,1),tol=1e-8,rtol=1e-8)[0]
+    growth_lcdm_trans = scipy.integrate.quadrature(growth_eqns.growth_int,ai,a_trans,args=(Omega_m,ai,a_trans),tol=1e-8,rtol=1e-8)[0]
+    growth_lcdm_fin = scipy.integrate.quadrature(growth_eqns.growth_int,ai,1,args=(Omega_m,ai,1),tol=1e-8,rtol=1e-8)[0]
     D_lcdm = growth_lcdm_trans/growth_lcdm_fin # LCDM growth normalized at a=1
     pk_gr_ini = D_lcdm**2 * pk_gr
 
@@ -63,8 +63,8 @@ def compute_pk_dgp_vectorized(Omega_m,rcH0,zvec,pk_gr):
     z_trans = 127
     a_trans = 1/(1+z_trans)
     ai = 1e-10
-    growth_lcdm_trans = scipy.integrate.quadrature(growth_eqns.growth_int,ai,a_trans,args=(Omega_m,-1.,0.,ai,a_trans),tol=1e-8,rtol=1e-8)[0]
-    growth_lcdm_fin = scipy.integrate.quadrature(growth_eqns.growth_int,1e-10,1,args=(Omega_m,-1.,0.,ai,1),tol=1e-8,rtol=1e-8)[0]
+    growth_lcdm_trans = scipy.integrate.quadrature(growth_eqns.growth_int,ai,a_trans,args=(Omega_m,ai,a_trans),tol=1e-8,rtol=1e-8)[0]
+    growth_lcdm_fin = scipy.integrate.quadrature(growth_eqns.growth_int,ai,1,args=(Omega_m,ai,1),tol=1e-8,rtol=1e-8)[0]
     D_lcdm = growth_lcdm_trans/growth_lcdm_fin # LCDM growth normalized at a=1
     pk_gr_ini = D_lcdm**2 * pk_gr
 
