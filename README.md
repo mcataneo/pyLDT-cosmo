@@ -59,7 +59,9 @@ Python code to generate matter PDF predictions in Large Deviation Theory for LCD
    
    A test routine starts cruching the numbers (it should take about 90 sec.) and if pyLDT is correctly installed it should give 1 passed tests
 
-### Note for Conda users<a name="conda_footnote"></a>
+<a name="conda_footnote"></a>
+### Note for Conda users
+
 
 ## Models
 
