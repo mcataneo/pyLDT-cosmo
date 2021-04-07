@@ -57,11 +57,18 @@ Python code to generate matter PDF predictions in Large Deviation Theory for LCD
    
     pytest --pyargs pyLDT_cosmo 
    
-   A test routine starts cruching the numbers (it should take about 90 sec.) and if pyLDT is correctly installed it should give 1 passed tests
+   A test routine starts cruching the numbers (it should take about 80 sec.) and if pyLDT is correctly installed it should give 1 passed tests
 
 <a name="conda_footnote"></a>
 ### Note for Conda users
 
+First make sure to install pip in your conda environment with
+
+    conda install pip
+
+Replace all subsequent 'pip install' commands with 'python -m pip install' so that packages are installed using the virtual enviroment's pip.
+
+Owing to an [incompatibility between PyJulia and Conda](https://pyjulia.readthedocs.io/en/latest/troubleshooting.html), PyJulia cannot be properly initialised out-of-the-box. As a workaround pyLDT-cosmo will automatically disable the precompilation cache mechanism in Julia, which inevitably slows down loading and usage of Julia packages. As a result, loading pyLDT-cosmo can take up to 3x longer in a conda envirnoment and PDF calculations can easily double their execution time. 
 
 ## Models
 
