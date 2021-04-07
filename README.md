@@ -13,7 +13,7 @@ Python code to generate matter PDF predictions in Large Deviation Theory for LCD
     
     python -m pip install --upgrade pip
 
-(3) for a clean install of pyLDT create a virtual environment first. I will use virtualenvwrapper, but conda or any other environment manager will do. For more details on how to install and configure virtualenvwrapper visit https://virtualenvwrapper.readthedocs.io/en/latest/index.html
+(3) for a clean install of pyLDT create a virtual environment first. I will use virtualenvwrapper, but conda or any other environment manager will do ([see installation note below for conda users](#conda_footnote)). For more details on how to install and configure virtualenvwrapper visit https://virtualenvwrapper.readthedocs.io/en/latest/index.html
 
 (4) Once virtualenvwrapper is setup, create simultaneously a project and an environment (e.g., pyLDTenv) typing in terminal
 
@@ -59,8 +59,32 @@ Python code to generate matter PDF predictions in Large Deviation Theory for LCD
    
    A test routine starts cruching the numbers (it should take about 90 sec.) and if pyLDT is correctly installed it should give 1 passed tests
 
+### Note for Conda users<a name="conda_footnote"></a>
+
+## Models
+
+Currently available cosmological models include:
+
+* ΛCDM
+* Hu-Sawicki f(R) gravity ([0705.1158](https://arxiv.org/abs/0705.1158)) 
+* nDGP gravity with a ΛCDM background ([0910.0235](https://arxiv.org/abs/0910.0235))
+* w0waCDM with smooth (cs2=1) or clustering dark energy (cs2 < 1) ([0808.3125](https://arxiv.org/abs/0808.3125))
+
+Einstein-de Sitter spherical evolution is assumed for all cases, although this has not been tested for clustering dark energy. 
+
+If interested in implementing other modified gravity models, first clone this Git repo and make sure to install pyLDT-cosmo in developer mode. Then add the relevant linear theory equations and methods in the following modules:
+
+* growth_eqns.py
+* solve_eqns.py
+* compute_pk.py
+* pyLDT.py
+
+Track f(R) gravity (or nDGP gravity) for an example.
+
 ## Jupyter notebook
 
 Go to https://github.com/mcataneo/pyLDT-cosmo/tree/main and download the example jupyter notebook showing how to use pyLDT. Move the notebook into the pyLDTenv directory. To fully exploit the notebook functionalities you'll need to 'pip install matplotlib' first.
+
+pyLDT-cosmo is partly based on the Julia programming language
 
 That's all! Have fun!
