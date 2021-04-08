@@ -26,7 +26,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     package_data={'pyLDT_cosmo': ['benchmarks/*.dat']},
     install_requires=[
-        'numpy==1.20.1',
+        'numpy==1.19.5',
         'scipy==1.6.2',
         'camb==1.3.0',
         'mcfit==0.0.16',
