@@ -81,14 +81,22 @@ Currently available cosmological models include:
 
 Einstein-de Sitter spherical evolution is assumed for all cases, although this has not been tested for clustering dark energy. 
 
-If interested in implementing other modified gravity models, first clone this Git repo and make sure to install pyLDT-cosmo in developer mode. Then add the relevant linear theory equations and methods to the following modules:
+If interested in implementing other modified gravity models: 
 
-* growth_eqns.py
-* solve_eqns.py
-* compute_pk.py
-* pyLDT.py
+* Follow the installation steps (1)-(8) above
+* Clone this Git repo into the newly created environment
+* Move into the pyLDT-cosmo directory and install pyLDT-cosmo in developer (or editable) mode with
 
-Track f(R) gravity (or nDGP gravity) for an example.
+        pip install -e .
+
+* Then add the relevant linear theory equations and methods to the following modules:
+
+    * growth_eqns.py
+    * solve_eqns.py
+    * compute_pk.py
+    * pyLDT.py
+
+  Track f(R) gravity (or nDGP gravity) for an example.
 
 ## Jupyter notebook
 
