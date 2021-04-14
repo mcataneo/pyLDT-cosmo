@@ -26,7 +26,7 @@ def compute_pk_wcdm(params, zf):
 
     pars = camb.CAMBparams()
     pars.set_cosmology(H0=params['h'], ombh2=ombh2, omch2=omch2, mnu=0., tau=0.09)
-    pars.set_dark_energy(w=params['w0'], wa=params['wa'], cs2=params['cs2'], dark_energy_model='fluid')
+    pars.set_dark_energy(w=params['w0'], wa=params['wa'], cs2=params['cs2'], dark_energy_model='ppf')
     pars.InitPower.set_params(As=params['A_s'], ns=params['n_s'])
     pars.set_accuracy(AccuracyBoost=1)
     pars.set_matter_power(redshifts=zf, kmax=20, k_per_logint=0, nonlinear=False, silent=True)
