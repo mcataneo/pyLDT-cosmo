@@ -77,9 +77,9 @@ Currently available cosmological models include:
 * ΛCDM
 * Hu-Sawicki f(R) gravity ([0705.1158](https://arxiv.org/abs/0705.1158)) 
 * nDGP gravity with a ΛCDM background ([0910.0235](https://arxiv.org/abs/0910.0235))
-* w0waCDM with smooth (cs2=1) or clustering dark energy (cs2 < 1) ([0009008](https://arxiv.org/abs/gr-qc/0009008), [0208512](https://arxiv.org/abs/astro-ph/0208512), [e.g. 0307100](https://arxiv.org/abs/astro-ph/0307100))
+* w0waCDM ([0009008](https://arxiv.org/abs/gr-qc/0009008), [0208512](https://arxiv.org/abs/astro-ph/0208512), [0808.3125](https://arxiv.org/abs/0808.3125))
 
-Einstein-de Sitter spherical evolution is assumed for all cases, although this has not been tested for clustering dark energy. 
+Einstein-de Sitter spherical evolution is assumed for all cases.
 
 If interested in implementing other modified gravity models: 
 
