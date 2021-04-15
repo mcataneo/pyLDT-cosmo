@@ -1,5 +1,5 @@
 # pyLDT-cosmo
-Python code to generate matter PDF predictions in Large Deviation Theory for LCDM and alternative cosmologies
+A Python package to generate matter PDF predictions in Large Deviation Theory for LCDM and alternative cosmologies
 
 ## Installation
 
