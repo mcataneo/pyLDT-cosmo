@@ -1,7 +1,7 @@
 # pyLDT-cosmo
 Python code to generate matter PDF predictions in Large Deviation Theory for LCDM and alternative cosmologies
 
-## Installation and testing
+## Installation
 
 (1) If not yet available on your machine, install julia (all platforms: download it from julialang.org; for macOS only you can alternatively 
 
