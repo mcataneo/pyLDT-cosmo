@@ -89,7 +89,7 @@ If interested in implementing other modified gravity models:
 
         pip install -e .
 
-* Add the relevant linear theory equations and methods to the following modules:
+* Add the relevant linear theory equations and methods to the following modules in the 'pyLDT_cosmo' sub-dir:
 
     * growth_eqns.py
     * solve_eqns.py
