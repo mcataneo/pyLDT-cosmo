@@ -89,14 +89,14 @@ If interested in implementing other modified gravity models:
 
         pip install -e .
 
-* Then add the relevant linear theory equations and methods to the following modules:
+* Add the relevant linear theory equations and methods to the following modules:
 
     * growth_eqns.py
     * solve_eqns.py
     * compute_pk.py
     * pyLDT.py
 
-  Track f(R) gravity (or nDGP gravity) for an example.
+  For an example, track f(R) gravity (or nDGP gravity).
 
 ## Jupyter notebook
 
