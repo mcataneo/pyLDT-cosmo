@@ -75,7 +75,7 @@ Owing to an [incompatibility between PyJulia and Conda](https://pyjulia.readthed
 Currently available cosmological models include:
 
 * ΛCDM
-* Hu-Sawicki f(R) gravity ([0705.1158](https://arxiv.org/abs/0705.1158)) 
+* Hu-Sawicki f(R) gravity with fixed ΛCDM background ([0705.1158](https://arxiv.org/abs/0705.1158)) 
 * nDGP gravity with a ΛCDM background ([0910.0235](https://arxiv.org/abs/0910.0235))
 * w0waCDM ([0009008](https://arxiv.org/abs/gr-qc/0009008), [0208512](https://arxiv.org/abs/astro-ph/0208512), [0808.3125](https://arxiv.org/abs/0808.3125))
 
