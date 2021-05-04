@@ -18,7 +18,7 @@ def calc_tau_gr(dini_vec,dlin_vec,Omega_m,xi,xf):
         yf = SphEvoGR(dini,Omega_m,xi,xf)
         dNL_vec[j] = (1 + dini) / (np.exp(xi)/np.exp(xf) * yf + 1)**3
 
-    return scipy.interpolate.CubicSpline(dNL_vec,dlin_vec)
+    return scipy.interpolate.InterpolatedUnivariateSpline(dNL_vec, dlin_vec, k=5) #scipy.interpolate.CubicSpline(dNL_vec,dlin_vec)
 
 def calc_growth_fr_full(Omega_m,fR0,n,k,xf):
     gi = [1.,0.]
