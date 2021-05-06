@@ -1,7 +1,7 @@
 # pyLDT-cosmo
-Python code to generate matter PDF predictions in Large Deviation Theory for LCDM and alternative cosmologies
+A Python package to generate matter PDF predictions in Large Deviation Theory for ΛCDM and alternative cosmologies
 
-## Installation and testing
+## Installation
 
 (1) If not yet available on your machine, install julia (all platforms: download it from julialang.org; for macOS only you can alternatively 
 
@@ -75,8 +75,8 @@ Owing to an [incompatibility between PyJulia and Conda](https://pyjulia.readthed
 Currently available cosmological models include:
 
 * ΛCDM
-* Hu-Sawicki f(R) gravity with fixed ΛCDM background ([0705.1158](https://arxiv.org/abs/0705.1158)) 
-* nDGP gravity with a ΛCDM background ([0910.0235](https://arxiv.org/abs/0910.0235))
+* Hu-Sawicki f(R) gravity with ΛCDM background ([0705.1158](https://arxiv.org/abs/0705.1158)) 
+* nDGP gravity with ΛCDM background ([0910.0235](https://arxiv.org/abs/0910.0235))
 * w0waCDM ([0009008](https://arxiv.org/abs/gr-qc/0009008), [0208512](https://arxiv.org/abs/astro-ph/0208512), [0808.3125](https://arxiv.org/abs/0808.3125))
 
 Einstein-de Sitter spherical evolution is assumed for all cases.
@@ -89,14 +89,14 @@ If interested in implementing other modified gravity models:
 
         pip install -e .
 
-* Then add the relevant linear theory equations and methods to the following modules:
+* Add the relevant linear theory equations and methods to the following modules in the 'pyLDT_cosmo' sub-directory:
 
     * growth_eqns.py
     * solve_eqns.py
     * compute_pk.py
     * pyLDT.py
 
-  Track f(R) gravity (or nDGP gravity) for an example.
+  For an example, track f(R) gravity (or nDGP gravity).
 
 ## Jupyter notebook
 
