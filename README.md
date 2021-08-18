@@ -1,6 +1,11 @@
 # pyLDT-cosmo
 A Python package to generate matter PDF predictions in Large Deviation Theory for ΛCDM and alternative cosmologies
 
+<p float="left">
+    <img src="docs/pdfs_z.png" width="480">
+    <img src="docs/pdfs_R.png" width="480">
+</p>
+
 ## Installation
 
 (1) If not yet available on your machine, install julia (all platforms: download it from julialang.org; for macOS only you can alternatively 
