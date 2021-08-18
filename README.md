@@ -2,8 +2,8 @@
 A Python package to generate matter PDF predictions in Large Deviation Theory for ΛCDM and alternative cosmologies
 
 <p float="left">
-    <img src="docs/pdfs_z.png" width="480">
-    <img src="docs/pdfs_R.png" width="480">
+    <img src="docs/pdfs_z.png" width="350">
+    <img src="docs/pdfs_R.png" width="350">
 </p>
 
 ## Installation
