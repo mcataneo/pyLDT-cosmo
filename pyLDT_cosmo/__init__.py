@@ -1,3 +1,3 @@
 from . import pyLDT
 
-__version__ = "0.4.10"
+__version__ = "1.0.0"
