@@ -47,7 +47,7 @@ A Python package to generate matter PDF predictions in Large Deviation Theory fo
 
 (9) Now run 
 
-    pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple pyLDT-cosmo 
+    pip install pyLDT-cosmo 
     
    hopefully at this stage all remaining Python dependencies will be automatically installed too
 
