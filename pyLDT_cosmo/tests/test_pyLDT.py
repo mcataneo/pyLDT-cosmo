@@ -18,9 +18,9 @@ def test_pdf():
     # Compute matter PDF for fiducial cosmology
     pdf_mat = mPDF.compute_pdf(cosmo_params_fid)
 
-    assert np.allclose(pdf_mat['lcdm'][0][0](rho), pdf_z0, atol=1e-06)
-    assert np.allclose(pdf_mat['lcdm'][0][1](rho), pdf_z0p5, atol=1e-06)
-    assert np.allclose(pdf_mat['lcdm'][0][2](rho), pdf_z1, atol=1e-06)
+    assert np.allclose(pdf_mat['lcdm'][0][0](rho), pdf_z0, rtol=1e-04, atol=1e-04)
+    assert np.allclose(pdf_mat['lcdm'][0][1](rho), pdf_z0p5, rtol=1e-04, atol=1e-04)
+    assert np.allclose(pdf_mat['lcdm'][0][2](rho), pdf_z1, rtol=1e-04, atol=1e-04)
 
 if __name__ == "__main__":
     test_pdf()
