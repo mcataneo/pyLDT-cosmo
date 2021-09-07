@@ -108,3 +108,23 @@ Go to https://github.com/mcataneo/pyLDT-cosmo/tree/main and download the example
 pyLDT-cosmo is partly based on the Julia programming language, which uses a Just-In-Time (JIT) compiler to improve runtime performance. However, this feature comes at the expense of slow library loading when compared to pure or pre-compiled Python packages. On a modern computer pyLDT-cosmo takes about 80 seconds to load. After that computation is very efficient, taking only ~3 seconds to derive the matter PDF's simultaneuosly for all models, redshifts and smoothing radii.  
 
 That's all! Have fun!
+
+## Citation
+
+When using pyLDT-cosmo in a publication, please acknowledge the code by citing the following paper
+
+    @ARTICLE{2021arXiv210902636C,
+       author = {{Cataneo}, Matteo and {Uhlemann}, Cora and {Arnold}, Christian and {Gough}, Alex and {Li}, Baojiu and {Heymans}, Catherine},
+        title = "{The matter density PDF for modified gravity and dark energy with Large Deviations Theory}",
+      journal = {arXiv e-prints},
+     keywords = {Astrophysics - Cosmology and Nongalactic Astrophysics},
+         year = 2021,
+        month = sep,
+          eid = {arXiv:2109.02636},
+        pages = {arXiv:2109.02636},
+    archivePrefix = {arXiv},
+       eprint = {2109.02636},
+    primaryClass = {astro-ph.CO},
+       adsurl = {https://ui.adsabs.harvard.edu/abs/2021arXiv210902636C},
+      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+    }
